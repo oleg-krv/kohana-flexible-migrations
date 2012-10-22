@@ -8,10 +8,14 @@ class Drivers_Mysql extends Drivers_Driver
 		$this->db->query($group, 'START TRANSACTION', false);
 	}
 	
-	public function __destroy($db)
-	{
-		$this->db->query($group, 'COMMIT', false);
-	}
+ 	public function __destruct()
+  {
+  	$this->db->query($this->group, 'COMMIT', false);
+  }
+  
+  public function create_table($table_name, $fields, $primary_key = TRUE)
+
+
 	
 	public function create_table($table_name, $fields, $primary_key = TRUE)
 	{
