@@ -18,6 +18,9 @@ class Controller_Flexiblemigrations extends Kohana_Controller_Template {
 
   public $template = 'migrations';
   protected $view;
+  /** @var  Flexiblemigrations*/
+  protected $migrations;
+  protected $model;
 
 	public function before() 
 	{
@@ -64,7 +67,7 @@ class Controller_Flexiblemigrations extends Kohana_Controller_Template {
 		
 		try 
 		{
-      		if (empty($migration_name)) 
+      	if (empty($migration_name))
       			throw new Exception("Migration mame must not be empty");
 
 			$this->migrations->generate_migration($migration_name);
@@ -97,5 +100,33 @@ class Controller_Flexiblemigrations extends Kohana_Controller_Template {
 		$messages = $this->migrations->rollback();
 		$this->view->set_global('messages', $messages);
 	}
+
+  public function action_dump()
+  {
+    $dump_name = str_replace(' ','_',$_REQUEST['dump_name']);
+    echo $dump_name;
+    $session = Session::instance();
+    try
+    {
+      if (empty($dump_name))
+        throw new Exception("Dump mame must not be empty");
+
+      $this->migrations->generate_dump($dump_name);
+
+      //Sets a status message
+      $session->set('message', "Dump full_dump_".$dump_name." was succefully created. Check migrations folder");
+    }
+    catch (Exception $e)
+    {
+      $session->set('message',  $e->getMessage());
+    }
+    $this->redirect(URL::base().Route::get('migrations_route')->uri());
+  }
+
+  public function action_dumpNew()
+  {
+    $this->view = new View('flexiblemigrations/dumpNew');
+    $this->template->view = $this->view;
+  }
 
 }

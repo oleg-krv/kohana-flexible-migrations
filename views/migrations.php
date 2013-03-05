@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <STYLE type="text/css">
       td { padding: 5px; }
+      .message {font-weight: bold;margin: 10px;}
       .ok {color: green;}
       .pending, .error {color: red;}
       span {display: block;}

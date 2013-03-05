@@ -9,11 +9,14 @@
 	<?php echo  HTML::anchor( Route::get('migrations_new')->uri() , 'Generate NEW migration') ?>
 </div>
 <br>
-
+<div>
+  <?php echo  HTML::anchor( Route::get('migrations_dumpNew')->uri() , 'Generate NEW Dump') ?>
+</div>
+<br>
 <div>
   <?php echo  HTML::anchor( Route::get('migrations_migrate')->uri() , 'RUN ALL PENDING MIGRATIONS') ?>
 </div>
-
+<br>
 <div>
   <?php echo  HTML::anchor( Route::get('migrations_rollback')->uri() , 'ROLLBACK') ?>
 </div>

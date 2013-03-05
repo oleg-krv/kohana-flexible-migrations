@@ -139,12 +139,13 @@ class Kohana_Flexiblemigrations
 		return $migrations;
 	}
 
-	/**
-	 * Generates a new migration file
-	 * TODO: Probably needs to be in outer class
-	 *
-	 * @return integer completion_code
-	 */
+  /**
+   * Generates a new migration file
+   * TODO: Probably needs to be in outer class
+   *
+   * @param $migration_name
+   * @return integer completion_code
+   */
 	public function generate_migration($migration_name)	
 	{
 		try
@@ -152,14 +153,15 @@ class Kohana_Flexiblemigrations
 			//Creates the migration file with the timestamp and the name from params
 			$file_name 	= $this->get_timestamp(). '_' . $migration_name . '.php';
 			$config 	= $this->get_config();
-			$file 		= fopen($config['path'].$file_name, 'w+');
+      $k= $config['path'].$file_name;
+			$file 		= fopen($k, 'w+');
 			
 			//Opens the template file and replaces the name
 			$view = new View('migration_template');
 			$view->set_global('migration_name', $migration_name);
 			fwrite($file, $view);
 			fclose($file);
-			chmod($config['path'].$file_name, 0770);
+			chmod($config['path'].$file_name, 0777);
 			return 0;
 		}
 		catch (Exception $e)
@@ -185,11 +187,13 @@ class Kohana_Flexiblemigrations
 		return $keys;
 	}
 
-	/**
-	 * Load the migration file, and returns a Migration object
-	 *
-	 * @return Migration object with up and down functions
-	 */
+  /**
+   * Load the migration file, and returns a Migration object
+   *
+   * @param $version
+   * @throws Kohana_Exception
+   * @return Migration object with up and down functions
+   */
 	protected function load_migration($version) 
 	{
 		$f = glob($this->_config['path'].$version.'*'. EXT);
@@ -220,5 +224,33 @@ class Kohana_Flexiblemigrations
 
 		return new $class();
 	}
+
+  public function generate_dump($dump_name)
+  {
+    try
+    {
+      $file_name 	= $this->get_timestamp(). '_full_dump_' . $dump_name . '.php';
+      $config 	= $this->get_config();
+      $k= $config['path'].$file_name;
+      $file 		= fopen($k, 'w+');
+
+      //Opens the template file and replaces the name
+      $migration_object = new Migration(false);
+      $dump = $migration_object->dump();
+      $view = new View('migration_template_table_dump');
+      $view->set_global('commands', $dump);
+      $view->set_global('migration_name', 'full_dump');
+      fwrite($file, $view);
+      fclose($file);
+      chmod($config['path'].$file_name, 0777);
+      return 0;
+    }
+    catch (Exception $e)
+    {
+      return 1;
+    }
+  }
+
+
 
 }

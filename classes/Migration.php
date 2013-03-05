@@ -14,13 +14,15 @@
  * Reworked for Kohana by Jamie Madill
  *
  * @package		Migrations
- * @author		Matías Montes
+ * @author		Matï¿½as Montes
  * @author      Jamie Madill
  */
 
 class Migration
 {
+  /** @var Drivers_Driver */
 	protected $driver;
+  /** @var \Database */
 	protected $db;
 	
 	// Override these two parameters to set behaviour of your migration
@@ -63,43 +65,45 @@ class Migration
 	{
 		throw new Kohana_Exception('migrations.abstract');
 	}
-	
-	/**
-	 * Create Table
-	 *
-	 * Creates a new table
-	 *
-	 * $fields:
-	 *
-	 * 		Associative array containing the name of the field as a key and the
-	 * 		value could be either a string indicating the type of the field, or an
-	 * 		array containing the field type at the first position and any optional
-	 * 		arguments the field might require in the remaining positions.
-	 * 		Refer to the TYPES function for valid type arguments.
-	 * 		Refer to the FIELD_ARGUMENTS function for valid optional arguments for a
-	 * 		field.
-	 *
-	 * @example
-	 *
-	 *		create_table (
-	 * 			'blog',
-	 * 			array (
-	 * 				'title' => array ( 'string[50]', default => "The blog's title." ),
-	 * 				'date' => 'date',
-	 * 				'content' => 'text'
-	 * 			),
-	 * 		)
-	 *
-	 * @param	string   Name of the table to be created
-	 * @param	array
-	 * @param	mixed    Primary key, false if not desired, not specified sets to 'id' column.
-	 *                   Will be set to auto_increment, serial, etc.
-	 * @return	boolean
-	 */
-	public function create_table($table_name, $fields, $primary_key = TRUE)
+
+  /**
+   * Create Table
+   *
+   * Creates a new table
+   *
+   * $fields:
+   *
+   *     Associative array containing the name of the field as a key and the
+   *     value could be either a string indicating the type of the field, or an
+   *     array containing the field type at the first position and any optional
+   *     arguments the field might require in the remaining positions.
+   *     Refer to the TYPES function for valid type arguments.
+   *     Refer to the FIELD_ARGUMENTS function for valid optional arguments for a
+   *     field.
+   *
+   * @example
+   *
+   *    create_table (
+   *       'blog',
+   *       array (
+   *         'title' => array ( 'string[50]', default => "The blog's title." ),
+   *         'date' => 'date',
+   *         'content' => 'text'
+   *       ),
+   *     )
+   *
+   * @param  $table_name string   Name of the table to be created
+   * @param  $fields array
+   * @param  $primary_key mixed    Primary key, false if not desired, not specified sets to 'id' column.
+   *                   Will be set to auto_increment, serial, etc.
+   * @param bool|mixed $engine MySQL: InnoDB or MyISAM
+   * @param bool $default_charset utf8
+   * @return  boolean
+   */
+	public function create_table($table_name, $fields, $primary_key = TRUE,  $engine = FALSE, $default_charset = FALSE)
 	{
 		$this->log("Creating table '$table_name'...");
-		$ret = $this->driver->create_table($table_name, $fields, $primary_key);
+		$ret = $this->driver->create_table($table_name, $fields, $primary_key, $engine, $default_charset);
 		$this->log("DONE<br />");
 		return $ret;
 	}
@@ -151,15 +155,16 @@ class Migration
 		$this->log("DONE<br />");
 		return $ret;
 	}
-	
-	/**
-	 * Rename a column
-	 *
-	 * @param   string  Name of the table
-	 * @param   string  Name of the column
-	 * @param   string  New name
-	 * @return  bool
-	 */
+
+  /**
+   * Rename a column
+   *
+   * @param  $table_name string  Name of the table
+   * @param  $column_name string  Name of the column
+   * @param  $new_column_name string  New name
+   * @param  $params
+   * @return  bool
+   */
 	public function rename_column($table_name, $column_name, $new_column_name, $params)
 	{
 		$this->log("Renaming column '$column_name' in table '$table_name' to '$new_column_name'...");
@@ -234,6 +239,17 @@ class Migration
 	public function commit()
   {
 		$this->driver->run_query('COMMIT');
-  }	
+  }
+
+
+  /*public function dump_create()
+  {
+    return $this->driver->dump();
+  }*/
+
+  public function dump()
+  {
+    return $this->driver->dump();
+  }
 
 }

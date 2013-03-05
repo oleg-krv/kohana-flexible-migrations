@@ -38,4 +38,16 @@ if ($migrations_config['web_frontend'])
       'controller' => 'flexiblemigrations',
       'action'     => 'rollback',
     ));
+
+  Route::set('migrations_dump',$migrations_config['web_frontend_route'] . '/dump')
+    ->defaults(array(
+    'controller' => 'flexiblemigrations',
+    'action'     => 'dump',
+  ));
+
+  Route::set('migrations_dumpNew',$migrations_config['web_frontend_route'] . '/dumpNew')
+    ->defaults(array(
+    'controller' => 'flexiblemigrations',
+    'action'     => 'dumpNew',
+  ));
 }
